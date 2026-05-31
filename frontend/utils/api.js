@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
 
 export function imageUrl(src) {
   if (!src) return "";
-  if (src.startsWith("http")) return src;
+  if (src.startsWith("http") || src.startsWith("data:")) return src;
   return `${API_BASE_URL}${src}`;
 }
 

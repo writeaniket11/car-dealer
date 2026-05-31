@@ -1,26 +1,17 @@
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
 const Car = require("../models/Car");
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, path.join(__dirname, "..", "uploads")),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-  }
-});
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
     return cb(new Error("Only image files are allowed"));
   },
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 2 * 1024 * 1024 }
 });
 
 function toNumber(value) {
@@ -53,7 +44,10 @@ function buildCarPayload(body, files = []) {
     : Array.isArray(body.images)
       ? body.images
       : [];
-  const uploadedImages = files.map((file) => `/uploads/${file.filename}`);
+  const uploadedImages = files.map((file) => {
+    const base64 = file.buffer.toString("base64");
+    return `data:${file.mimetype};base64,${base64}`;
+  });
   payload.images = [...existingImages, ...uploadedImages];
 
   return payload;

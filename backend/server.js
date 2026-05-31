@@ -5,10 +5,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 
 const authRoutes = require("./routes/auth");
 const carRoutes = require("./routes/cars");
 const inquiryRoutes = require("./routes/inquiries");
+const Admin = require("./models/Admin");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -41,9 +43,23 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message || "Server error" });
 });
 
+async function ensureDefaultAdmin() {
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) return;
+
+  const email = process.env.ADMIN_EMAIL.toLowerCase();
+  const password = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
+  await Admin.findOneAndUpdate(
+    { email },
+    { email, password },
+    { upsert: true, runValidators: true }
+  );
+  console.log(`Admin account ready: ${email}`);
+}
+
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
+    await ensureDefaultAdmin();
     app.listen(port, () => console.log(`API running on port ${port}`));
   })
   .catch((error) => {

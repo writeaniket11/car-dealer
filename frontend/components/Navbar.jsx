@@ -38,27 +38,49 @@ export default function Navbar() {
           <WhatsAppButton phoneNumber={phone} />
         </div>
 
-        <button className="md:hidden" aria-label="Open menu" onClick={() => setOpen(true)}>
-          <Menu />
+        <button
+          className="grid h-11 w-11 place-items-center rounded-md border border-gray-200 bg-white text-ink shadow-sm md:hidden"
+          aria-label="Open menu"
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
+        >
+          <Menu size={26} strokeWidth={2.5} />
         </button>
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 bg-black/40 md:hidden" onClick={() => setOpen(false)}>
-          <div className="ml-auto h-full w-80 max-w-[86vw] bg-white p-5" onClick={(event) => event.stopPropagation()}>
-            <div className="mb-8 flex items-center justify-between">
-              <span className="text-lg font-black">Prime Wheels</span>
-              <button aria-label="Close menu" onClick={() => setOpen(false)}>
-                <X />
+        <div className="fixed inset-0 z-[100] bg-black/60 md:hidden" onClick={() => setOpen(false)}>
+          <div
+            className="ml-auto flex h-full w-[88vw] max-w-sm flex-col bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex h-20 items-center justify-between border-b border-gray-200 px-5">
+              <div>
+                <span className="block text-xl font-black text-ink">Prime Wheels</span>
+                <span className="mt-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Menu</span>
+              </div>
+              <button
+                className="grid h-11 w-11 place-items-center rounded-md bg-ink text-white"
+                aria-label="Close menu"
+                onClick={() => setOpen(false)}
+              >
+                <X size={24} strokeWidth={2.5} />
               </button>
             </div>
-            <div className="grid gap-4">
+            <nav className="grid gap-2 p-5">
               {links.map(([label, href]) => (
-                <Link key={href} href={href} onClick={() => setOpen(false)} className="text-base font-semibold">
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md border border-gray-200 px-4 py-4 text-base font-bold text-ink active:bg-gray-100"
+                >
                   {label}
                 </Link>
               ))}
-              <a href="tel:+919999999999" className="btn-outline mt-4">
+            </nav>
+            <div className="mt-auto grid gap-3 border-t border-gray-200 p-5">
+              <a href="tel:+919999999999" className="btn-outline">
                 <Phone size={16} /> Call Now
               </a>
               <WhatsAppButton phoneNumber={phone} />

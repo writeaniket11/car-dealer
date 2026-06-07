@@ -17,7 +17,7 @@ export default function Navbar() {
   const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "91XXXXXXXXXX";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
       <div className="container-page flex h-16 items-center justify-between">
         <Link href="/" className="text-xl font-black tracking-tight text-ink">
           Prime Wheels
